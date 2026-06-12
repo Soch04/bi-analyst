@@ -20,6 +20,29 @@ The MCP server supported the below capabilities:
 
 # Getting Started
 
+## Prerequisites
+
+### Install uv
+
+`uv` is required to run the MCP server via `uvx`. Install it with:
+
+**macOS / Linux:**
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+**Windows (PowerShell):**
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+After installing, restart your terminal and verify with:
+```bash
+uv --version
+```
+
+For more options, see the [uv installation docs](https://docs.astral.sh/uv/getting-started/installation/).
+
 ## Service Configuration
 
 A simple configuration file is used to drive all tooling. An example can be seen at [services/configuration.yaml](services/configuration.yaml) and a template is below. The path to this configuration file will be passed to the server and the contents used to create MCP server tools at startup.
@@ -183,27 +206,39 @@ The MCP server is client-agnostic and will work with most MCP Clients that suppo
 ## [Claude Desktop](https://support.anthropic.com/en/articles/10065433-installing-claude-for-desktop)
 
 To integrate this server with Claude Desktop as the MCP Client, add the following to your app's server configuration. By default, this is located at:
-- macOS: ~/Library/Application Support/Claude/claude_desktop_config.json
-- Windows: %APPDATA%\Claude\claude_desktop_config.json
+- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
 
-Set the path to the service configuration file and configure your connection method:
+A ready-to-use example config for this repo is provided at [`claude_desktop_config_EXAMPLE.json`](claude_desktop_config_EXAMPLE.json). Copy the `mcpServers` block from that file into your `claude_desktop_config.json`, replacing the bracketed placeholders with your actual paths and credentials.
+
+The example uses key pair authentication (recommended). Set the path to your `tools_config.yaml` and your `.p8` private key file:
 
 ```json
 {
   "mcpServers": {
     "mcp-server-snowflake": {
-      "command": "uvx",
+      "command": "<path_to_venv>/.venv/Scripts/snowflake-labs-mcp.exe",
       "args": [
-        "snowflake-labs-mcp",
         "--service-config-file",
-        "<path_to_file>/tools_config.yaml",
-        "--connection-name",
-        "default"
-      ]
+        "<path_to_repo>/mcp/services/tools_config.yaml",
+        "--account",
+        "<SNOWFLAKE_ACCOUNT>.us-east-1",
+        "--user",
+        "SERVICE_ACCOUNT_<NAME>",
+        "--role",
+        "<SNOWFLAKE_ROLE>",
+        "--warehouse",
+        "<SNOWFLAKE_WAREHOUSE>"
+      ],
+      "env": {
+        "SNOWFLAKE_PRIVATE_KEY_FILE": "<path_to_private_key>/SERVICE_ACCOUNT_<NAME>_PVK.p8"
+      }
     }
   }
 }
 ```
+
+After saving the config, restart Claude Desktop. The MCP server will appear in the tools panel on the left side of the chat interface.
 
 ## [Cursor](https://www.cursor.com/)
 
