@@ -1,0 +1,22 @@
+{
+  "mcpServers": {
+    "mcp-server-snowflake": {
+      "command": "D:[Path_to_virtual_environment_exe]\\.venv\\Scripts\\snowflake-labs-mcp.exe",
+      "args": [
+        "--service-config-file",
+        "D:[Path_to_tools_config.yaml]\\mcp\\services\\tools_config.yaml",
+        "--account",
+        "[SNOWFLAKE_ACCOUNT].us-east-1",
+        "--user",
+        "SERVICE_ACCOUNT_[NAME]",
+        "--role",
+        "[SNOWFLAKE_ROLE]",
+        "--warehouse",
+        "[SNOWFLAKE_WAREHOUSE]"
+      ],
+      "env": {
+        "SNOWFLAKE_PRIVATE_KEY_FILE": "D:[Path_to_private_key_file]\\SERVICE_ACCOUNT_[NAME]_PVK.p8"
+      }
+    }
+  }
+}
