@@ -1,0 +1,36 @@
+# The following services are managed by admin.
+agent_services: []
+  # REASON: No Cortex Agents exist in WELL_BI_DEV (confirmed via SHOW AGENTS).
+
+search_services: []
+  # REASON: No Cortex Search Services exist in WELL_BI_DEV (confirmed via SHOW CORTEX SEARCH SERVICES).
+
+analyst_services: []
+  # REASON: No semantic views or semantic YAML models exist in WELL_BI_DEV.
+  # Once you create a semantic view or upload a YAML to a stage, add it here.
+
+other_services:
+  object_manager: False   # No ability to create/drop/alter objects in WELL_BI_DEV
+  query_manager: True     # Lets the MCP run SQL you approve — to query WELL_BI_DEV tables
+  semantic_manager: False # No semantic views exist, so no point enabling this yet
+
+sql_statement_permissions:
+  # REASON: Since you only want to access WELL_BI_DEV and your role is mostly read-oriented,
+  # I'm keeping destructive operations disabled to be safe. You can enable them later.
+  - Select: True          # Core read access
+  - Describe: True        # Inspect table schemas
+  - Use: True             # USE DATABASE/SCHEMA
+  - Create: True          # CREATE TABLE on some schemas
+  - Insert: True          # Write to tables you own
+  - Update: True          # Modify data in your tables
+  - Delete: False         # Disabled — prevents accidental data deletion
+  - Drop: False           # Disabled — prevents accidentally dropping objects
+  - Alter: False          # Disabled — prevents accidental schema changes
+  - TruncateTable: False  # Disabled — prevents wiping tables
+  - Merge: True           # Useful for upserts
+  - Command: True         # Disabled — blocks misc commands for safety, Enabled for CALL statement.
+  - Comment: True         # Annotate objects
+  - Commit: True          # Transaction support
+  - Rollback: True        # Transaction support
+  - Transaction: True     # Transaction support
+  - Unknown: False        # Block anything unmapped — safe default
